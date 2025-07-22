@@ -4,16 +4,22 @@ using System.Collections.Generic;
 
 public partial class Snake : Node2D
 {
-	List<Vector2> LastPositions = new List<Vector2>();
+	
 	private Vector2 InitialPosition = new Vector2(68, 76);
 	private List<String> directions = [
 		"right", "left", "up", "down"
 	];
+
+	
+	List<Vector2> LastPositions = new List<Vector2>();
+	public Vector2 lastPosition;
+
 	private int directionIndex;
+	public Main mainNode;
 
 	public override void _Ready()
 	{
-		GD.Print("Running");
+		mainNode = GetNode<Main>("/root/Main");
 		Position = InitialPosition;
 	}
 
@@ -30,11 +36,9 @@ public partial class Snake : Node2D
 
 	private void OnTimerTimeout()
 	{
-		GD.Print($"{Position.X}, {Position.Y}");
-
 		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
-		
+
 		switch (directionIndex)
 		{
 			case 0:
@@ -51,31 +55,43 @@ public partial class Snake : Node2D
 				break;
 
 		}
+
+		if (mainNode._score > 0)
+		{
+			LastPositions.Insert(0, Position);
+		
+			while (LastPositions.Count > mainNode._score)
+			{
+				LastPositions.RemoveAt(LastPositions.Count - 1);
+			}
+			
+			GD.Print("Positions: " + string.Join(", ", LastPositions));
+		} 
 	}
+
 
 	public override void _Input(InputEvent @event)
 	{
-		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
 		if (@event.IsActionPressed("move_right"))
 		{
 			directionIndex = 0;
-			
+
 		}
 		else if (@event.IsActionPressed("move_left"))
 		{
 			directionIndex = 1;
-			
+
 		}
 		else if (@event.IsActionPressed("move_up"))
 		{
 			directionIndex = 2;
-			
+
 		}
 		else if (@event.IsActionPressed("move_down"))
 		{
 			directionIndex = 3;
-			
+
 		}
 	}
 
