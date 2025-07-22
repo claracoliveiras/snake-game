@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvt03q2nhg2c7"]
+
+[ext_resource type="Script" uid="uid://ct4yb6kq3wpuy" path="res://Main.cs" id="1_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://dv222m4pgbxsd" path="res://snake.tscn" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://b4tkmn7ghikdm" path="res://assets/snake-game-bg.png" id="2_0xm2m"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_1bvp3")
+
+[node name="Snake-game-bg" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(68, 72)
+texture = ExtResource("2_0xm2m")
+
+[node name="Snake" parent="." instance=ExtResource("1_ig7tw")]
+position = Vector2(12, 20)
+
+[node name="MovementTimer" type="Timer" parent="Snake"]
+wait_time = 0.5
+autostart = true
+
+[node name="Label" type="Label" parent="."]
+texture_filter = 1
+offset_left = 74.0
+offset_top = 7.0
+offset_right = 126.0
+offset_bottom = 30.0
+rotation = 0.00556976
+scale = Vector2(0.25, 0.25)
+text = "Score: "
+
+[connection signal="timeout" from="Snake/MovementTimer" to="Snake" method="OnTimerTimeout"]
