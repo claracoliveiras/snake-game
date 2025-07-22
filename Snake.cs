@@ -20,7 +20,7 @@ public partial class Snake : Node2D
 	public override void _Process(double delta)
 	{
 		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-		animatedSprite2D.Play();
+		animatedSprite2D.Play(directions[directionIndex]);
 
 		if (Position.X <= 7 || Position.X >= 132 || Position.Y <= 12 || Position.Y >= 140)
 		{
@@ -30,8 +30,10 @@ public partial class Snake : Node2D
 
 	private void OnTimerTimeout()
 	{
+		GD.Print($"{Position.X}, {Position.Y}");
+
 		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-		var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("idle", 0).GetSize();
+		var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
 		
 		switch (directionIndex)
 		{
@@ -53,22 +55,27 @@ public partial class Snake : Node2D
 
 	public override void _Input(InputEvent @event)
 	{
+		var animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
 		if (@event.IsActionPressed("move_right"))
 		{
 			directionIndex = 0;
+			
 		}
 		else if (@event.IsActionPressed("move_left"))
 		{
 			directionIndex = 1;
+			
 		}
 		else if (@event.IsActionPressed("move_up"))
 		{
 			directionIndex = 2;
+			
 		}
 		else if (@event.IsActionPressed("move_down"))
 		{
 			directionIndex = 3;
+			
 		}
 	}
 
