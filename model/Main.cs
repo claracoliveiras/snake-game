@@ -34,7 +34,7 @@ public partial class Main : Node2D
 
 	private void HeadSpawn()
 	{
-		var scene = GD.Load<PackedScene>("res://snake_head.tscn");
+		var scene = GD.Load<PackedScene>("res://model/snake/snake_head.tscn");
 		var _instance = scene.Instantiate<SnakeHead>();
 		AddChild(_instance);
 		SnakeHead = _instance;
@@ -85,7 +85,7 @@ public partial class Main : Node2D
 
 	private void CoinSpawn()
 	{
-		var scene = GD.Load<PackedScene>("res://coin.tscn");
+		var scene = GD.Load<PackedScene>("res://model/coin/coin.tscn");
 		var _instance = scene.Instantiate();
 		AddChild(_instance);
 		CoinExists = true;
@@ -132,7 +132,7 @@ public partial class Main : Node2D
 
 		while (_bodyInstanceAmount != 0)
 		{
-			var scene = GD.Load<PackedScene>("res://snake_body.tscn");
+			var scene = GD.Load<PackedScene>("res://model/snake/snake_body.tscn");
 			var _instance = scene.Instantiate<SnakeBody>();
 			_instance.Name = "body_" + counter;
 			SnakebodyList.Insert(0, _instance);
