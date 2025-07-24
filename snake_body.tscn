@@ -146,7 +146,7 @@ animations = [{
 "texture": ExtResource("35_ae3j1")
 }],
 "loop": true,
-"name": &"body",
+"name": &"idle",
 "speed": 5.0
 }]
 
@@ -159,7 +159,8 @@ script = ExtResource("1_i217d")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_x3n3j")
-animation = &"body"
+animation = &"idle"
+frame_progress = 0.0563518
 speed_scale = 2.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
