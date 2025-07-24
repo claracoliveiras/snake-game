@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.Metrics;
 using System.Linq;
 
 public partial class Main : Node2D
@@ -16,16 +17,28 @@ public partial class Main : Node2D
 	public int _score = 0;
 	public bool CoinExists = false;
 	public List<Vector2> CellCenters = [];
-	public List<Vector2> SnakePositions = new List<Vector2>();
+
 	private Vector2 InitialPosition = new Vector2(68, 76);
 	public int DirectionIndex;
 
-	public Snake Snake;
+	public SnakeHead SnakeHead;
+	public int _bodyInstanceAmount = 0;
+	public List<SnakeBody> SnakebodyList = new List<SnakeBody>();
+	public List<Vector2> SnakePositions = new List<Vector2>();
 
 	public override void _Ready()
 	{
 		GameboardAlgorithm();
 		HeadSpawn();
+	}
+
+	private void HeadSpawn()
+	{
+		var scene = GD.Load<PackedScene>("res://snake_head.tscn");
+		var _instance = scene.Instantiate<SnakeHead>();
+		AddChild(_instance);
+		SnakeHead = _instance;
+		SnakeHead.Position = InitialPosition;
 	}
 
 	private void GameboardAlgorithm()
@@ -48,14 +61,26 @@ public partial class Main : Node2D
 	public override void _Process(double delta)
 	{
 		GameOver();
+
 		var scoreNode = GetNode<Label>("Label");
 		scoreNode.Text = $"Score: {_score}";
-		BodySpawn();
+
 		if (!CoinExists)
 		{
 			CoinSpawn();
 		}
 
+	}
+
+	private void GameOver()
+	{
+		if (SnakeHead.Position.X <= 7 || SnakeHead.Position.X >= 132 || SnakeHead.Position.Y <= 12 || SnakeHead.Position.Y >= 140)
+		{
+			DirectionIndex = 0;
+			_score = 0;
+			SnakeHead.Position = InitialPosition;
+			_bodyInstanceAmount = 0;
+		}
 	}
 
 	private void CoinSpawn()
@@ -66,86 +91,85 @@ public partial class Main : Node2D
 		CoinExists = true;
 	}
 
-	private void HeadSpawn()
-	{
-		var scene = GD.Load<PackedScene>("res://snake.tscn");
-		var _instance = scene.Instantiate<Snake>();
-		AddChild(_instance);
-		Snake = _instance;
-		Snake.Position = InitialPosition;
-	}
-
-	private void BodySpawn()
-	{
-		foreach (Vector2 position in SnakePositions)
-		{
-			if (position != SnakePositions[0])
-			{
-				var scene = GD.Load<PackedScene>("res://snake_body_2.tscn");
-				var _instance = scene.Instantiate<SnakeBody2>();
-				AddChild(_instance);
-				_instance.Position = position;
-			}
-		}
-
-		// TO-DO: FIGURE OUT DELETING
-
-	}
-
-	private void GameOver()
-	{
-		if (Snake.Position.X <= 7 || Snake.Position.X >= 132 || Snake.Position.Y <= 12 || Snake.Position.Y >= 140)
-		{
-			var specificChildren = GetChildren();
-			foreach (Node child in specificChildren)
-			{
-				if (child is SnakeBody2)
-				{
-					child.QueueFree();
-				}
-			}			
-			
-			DirectionIndex = 0;
-			_score = 0;
-			Snake.Position = InitialPosition;
-		}
-	}
-
 	private void OnTimerTimeout()
 	{
-		var animatedSprite2D = Snake.AnimatedSprite2D;
+		var animatedSprite2D = SnakeHead.AnimatedSprite2D;
 		var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
 
 		switch (DirectionIndex)
 		{
 			case 0:
-				Snake.Position = new Vector2(Snake.Position.X + spriteSize.X, Snake.Position.Y);
+				SnakeHead.Position = new Vector2(SnakeHead.Position.X + spriteSize.X, SnakeHead.Position.Y);
 				break;
 			case 1:
-				Snake.Position = new Vector2(Snake.Position.X - spriteSize.X, Snake.Position.Y);
+				SnakeHead.Position = new Vector2(SnakeHead.Position.X - spriteSize.X, SnakeHead.Position.Y);
 				break;
 			case 2:
-				Snake.Position = new Vector2(Snake.Position.X, Snake.Position.Y - spriteSize.X);
+				SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y - spriteSize.X);
 				break;
 			case 3:
-				Snake.Position = new Vector2(Snake.Position.X, Snake.Position.Y + spriteSize.X);
+				SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y + spriteSize.X);
 				break;
 
 		}
 
-		if (_score > 0)
-		{
-			SnakePositions.Insert(0, Snake.Position);
-
-			while (SnakePositions.Count > _score)
-			{
-				SnakePositions.RemoveAt(_score + 1);
-			}
-
-			GD.Print($"Position: {Snake.Position}");
-			GD.Print("Positions: " + string.Join(", ", SnakePositions));
-		}
-		
+		UpdateSnakePositionList();
+		HandleBodySpawn();
 	}
 
+	public void UpdateSnakePositionList()
+	{
+		SnakePositions.Insert(0, SnakeHead.Position);
+		while (SnakePositions.Count > _score + 1)
+		{
+			SnakePositions.RemoveAt(SnakePositions.Count - 1);
+		}
+	}
+
+	private void HandleBodySpawn()
+	{
+		var counter = 0;
+
+		while (_bodyInstanceAmount != 0)
+		{
+			var scene = GD.Load<PackedScene>("res://snake_body.tscn");
+			var _instance = scene.Instantiate<SnakeBody>();
+			_instance.Name = "body_" + counter;
+			SnakebodyList.Insert(0, _instance);
+			AddChild(_instance);
+			_bodyInstanceAmount -= 1;
+		}
+
+		HandleBodyMovement();
+	}
+
+	private void HandleBodyMovement()
+	{
+		var j = 1;
+		for (int i = 0; i < SnakebodyList.Count(); i++)
+		{
+			SnakebodyList[i].Position = SnakePositions[j];
+			j += 1;
+		}
+	}
+
+	private void HandleDeleteBody()
+	{
+		// foreach (string name in bodyNodeNames)
+		// {
+		// 	var nodeToRemove = GetNode($"{name}");
+		// 	nodeToRemove.QueueFree();
+		// }
+
+		// var counter = 0;
+		// foreach (Vector2 position in SnakePositions)
+		// {
+
+		// FOR DELETING
+		// for loop that does get_node whose name includes #body
+		// add it into a list
+		// loop through the list deleting everything
+		// body1, body2, body3
+		// [thing].QueueFree();
+	}
 }

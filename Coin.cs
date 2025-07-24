@@ -3,19 +3,20 @@ using System;
 
 public partial class Coin : Area2D
 {
-	public Main mainNode;
+	public Main MainNode;
 	public override void _Ready()
 	{
-		mainNode = GetNode<Main>("/root/Main");
+		MainNode = GetNode<Main>("/root/Main");
 		Random randomNumber = new Random();
-		Position = mainNode.CellCenters[randomNumber.Next(0, 225)];
+		Position = MainNode.CellCenters[randomNumber.Next(0, 225)];
 		AreaEntered += OnAreaEntered;
 	}
 
 	public void OnAreaEntered(Node2D node)
 	{
-		mainNode._score += 1;
-		mainNode.CoinExists = false;
+		MainNode._score += 1;
+		MainNode._bodyInstanceAmount += 1;
+		MainNode.CoinExists = false;
 		QueueFree();
 	}
 

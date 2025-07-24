@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Snake : Node2D
+public partial class SnakeHead : Node2D
 {
 	private List<String> directions = [
 		"right", "left", "up", "down"
