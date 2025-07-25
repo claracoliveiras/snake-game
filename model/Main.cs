@@ -1,21 +1,13 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Threading.Tasks;
 
 public partial class Main : Node2D
 {
-	// game board constraints
-	// left = 8
-	// right = 127
-	// top = 16
-	// bottom = 135
-	public bool isGameStarted = false;
-	public int _score = 0;
+	public bool IsGameStarted = false;
+	public int Score = 0;
 	public bool CoinExists = false;
 	public List<Vector2> CellCenters = [];
 
@@ -23,13 +15,18 @@ public partial class Main : Node2D
 	public int DirectionIndex;
 
 	public SnakeHead SnakeHead;
-	public int _bodyInstanceAmount = 0;
+	public int BodyInstanceAmount = 0;
 	public List<SnakeBody> SnakebodyList = new List<SnakeBody>();
 	public List<Vector2> SnakePositions = new List<Vector2>();
 
+	public int minXPosition = 8;
+	public int maxXPosition = 127;
+	public int minYPosition = 16;
+	public int maxYPosition = 135;
+
 	private void NewGame()
 	{
-		isGameStarted = true;
+		IsGameStarted = true;
 	}
 
 	public override void _Ready()
@@ -41,26 +38,26 @@ public partial class Main : Node2D
 	private void HeadSpawn()
 	{
 		var scene = GD.Load<PackedScene>("res://model/snake/snake_head.tscn");
-		var _instance = scene.Instantiate<SnakeHead>();
-		AddChild(_instance);
-		SnakeHead = _instance;
+		var instance = scene.Instantiate<SnakeHead>();
+		AddChild(instance);
+		SnakeHead = instance;
 		SnakeHead.Position = InitialPosition;
 	}
 
 	private void GameboardAlgorithm()
 	{
-		int x = 8;
-		int y = 16;
+		int xInitialPosition = 8;
+		int yInitialPosition = 16;
 
 		for (int j = 0; j < 15; j++)
 		{
 			for (int i = 0; i < 15; i++)
 			{
-				CellCenters.Add(new Vector2(x: x + 4, y: y + 4));
-				x += 8;
+				CellCenters.Add(new Vector2(x: xInitialPosition + 4, y: yInitialPosition + 4));
+				xInitialPosition += 8;
 			}
-			x = 8;
-			y += 8;
+			xInitialPosition = 8;
+			yInitialPosition += 8;
 		}
 	}
 
@@ -69,7 +66,7 @@ public partial class Main : Node2D
 		await GameOver();
 
 		var scoreNode = GetNode<Label>("ScoreDisplay");
-		scoreNode.Text = $"{_score}";
+		scoreNode.Text = $"{Score}";
 
 		if (!CoinExists)
 		{
@@ -80,30 +77,32 @@ public partial class Main : Node2D
 
 	private async Task GameOver()
 	{
-		if (SnakeHead.Position.X <= 7 || SnakeHead.Position.X >= 132 || SnakeHead.Position.Y <= 12 || SnakeHead.Position.Y >= 140 || SnakePositions.GetRange(1, SnakePositions.Count - 1).Contains(SnakeHead.Position))
+		
+
+		if (SnakeHead.Position.X < minXPosition || SnakeHead.Position.X > maxXPosition || SnakeHead.Position.Y < minYPosition || SnakeHead.Position.Y > maxYPosition || SnakePositions.GetRange(1, SnakePositions.Count - 1).Contains(SnakeHead.Position))
 		{
 			DirectionIndex = 0;
-			_score = 0;
+			Score = 0;
 			SnakeHead.Position = InitialPosition;
-			_bodyInstanceAmount = 0;
+			BodyInstanceAmount = 0;
 			HandleDeleteBody();
-			isGameStarted = false;
+			IsGameStarted = false;
 			await ToSignal(GetTree().CreateTimer(3.0), SceneTreeTimer.SignalName.Timeout);
-			isGameStarted = true;
+			IsGameStarted = true;
 		}
 	}
 
 	private void CoinSpawn()
 	{
 		var scene = GD.Load<PackedScene>("res://model/coin/coin.tscn");
-		var _instance = scene.Instantiate();
-		AddChild(_instance);
+		var instance = scene.Instantiate();
+		AddChild(instance);
 		CoinExists = true;
 	}
 
 	private void OnTimerTimeout()
 	{
-		if (isGameStarted)
+		if (IsGameStarted)
 		{
 			var animatedSprite2D = SnakeHead.AnimatedSprite2D;
 			var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
@@ -134,7 +133,7 @@ public partial class Main : Node2D
 	public void UpdateSnakePositionList()
 	{
 		SnakePositions.Insert(0, SnakeHead.Position);
-		while (SnakePositions.Count > _score + 1)
+		while (SnakePositions.Count > Score + 1)
 		{
 			SnakePositions.RemoveAt(SnakePositions.Count - 1);
 		}
@@ -144,14 +143,14 @@ public partial class Main : Node2D
 	{
 		var counter = 0;
 
-		while (_bodyInstanceAmount != 0)
+		while (BodyInstanceAmount != 0)
 		{
 			var scene = GD.Load<PackedScene>("res://model/snake/snake_body.tscn");
-			var _instance = scene.Instantiate<SnakeBody>();
-			_instance.Name = "body_" + counter;
-			SnakebodyList.Insert(0, _instance);
-			AddChild(_instance);
-			_bodyInstanceAmount -= 1;
+			var instance = scene.Instantiate<SnakeBody>();
+			instance.Name = "body_" + counter;
+			SnakebodyList.Insert(0, instance);
+			AddChild(instance);
+			BodyInstanceAmount -= 1;
 			counter += 1;
 		}
 

@@ -14,8 +14,8 @@ public partial class Coin : Area2D
 
 	public void OnAreaEntered(Node2D node)
 	{
-		MainNode._score += 1;
-		MainNode._bodyInstanceAmount += 1;
+		MainNode.Score += 1;
+		MainNode.BodyInstanceAmount += 1;
 		MainNode.CoinExists = false;
 		QueueFree();
 	}
