@@ -1,28 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvt03q2nhg2c7"]
+[gd_scene load_steps=4 format=3 uid="uid://bvt03q2nhg2c7"]
 
 [ext_resource type="Script" uid="uid://cysbcuqtddxs0" path="res://model/Main.cs" id="1_m1pku"]
-[ext_resource type="Texture2D" uid="uid://b4tkmn7ghikdm" path="res://assets/snake-game-bg.png" id="2_m1hhv"]
+[ext_resource type="Texture2D" uid="uid://bxdv6ckttqfyq" path="res://assets/game_background.png" id="2_qlidy"]
+[ext_resource type="PackedScene" uid="uid://cwwfg0trshbnc" path="res://menu.tscn" id="3_r1oox"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_m1pku")
 
-[node name="Snake-game-bg" type="Sprite2D" parent="."]
+[node name="GameBackground" type="Sprite2D" parent="."]
 texture_filter = 1
 position = Vector2(68, 72)
-texture = ExtResource("2_m1hhv")
+texture = ExtResource("2_qlidy")
 
 [node name="Label" type="Label" parent="."]
 texture_filter = 1
-offset_left = 74.0
-offset_top = 7.0
-offset_right = 126.0
-offset_bottom = 30.0
-rotation = 0.00556976
+offset_left = 102.0
+offset_top = 6.0
+offset_right = 154.0
+offset_bottom = 29.0
 scale = Vector2(0.25, 0.25)
-text = "Score: "
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
 
+[node name="Menu" parent="." instance=ExtResource("3_r1oox")]
+
 [connection signal="timeout" from="Timer" to="." method="OnTimerTimeout"]
+[connection signal="StartGame" from="Menu" to="." method="NewGame"]

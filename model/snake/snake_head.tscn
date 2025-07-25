@@ -1,6 +1,6 @@
 [gd_scene load_steps=144 format=3 uid="uid://dv222m4pgbxsd"]
 
-[ext_resource type="Script" uid="uid://dkyeoo6cmhb7s" path="res://model/snake/SnakeHead.cs" id="1_2jppf"]
+[ext_resource type="Script" uid="uid://dsxh07iskhjuo" path="res://model/snake/SnakeHead.cs" id="1_2jppf"]
 [ext_resource type="Texture2D" uid="uid://djdabm4i8xhof" path="res://assets/snake/down/snake_player_looking_down1.png" id="2_6vsmm"]
 [ext_resource type="Texture2D" uid="uid://whrj5ijw60hd" path="res://assets/snake/down/snake_player_looking_down2.png" id="3_ex8qt"]
 [ext_resource type="Texture2D" uid="uid://dlyijrikrq7hi" path="res://assets/snake/down/snake_player_looking_down3.png" id="4_a08r6"]

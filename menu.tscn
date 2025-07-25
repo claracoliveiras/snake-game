@@ -1,0 +1,83 @@
+[gd_scene load_steps=17 format=3 uid="uid://cwwfg0trshbnc"]
+
+[ext_resource type="Script" uid="uid://coeust57wpahj" path="res://Menu.cs" id="1_4hy44"]
+[ext_resource type="Texture2D" uid="uid://drhbmbbafkxnd" path="res://assets/start_menu.png" id="1_mae5d"]
+[ext_resource type="Texture2D" uid="uid://c3jfuedtuvp5w" path="res://assets/start_button1.png" id="2_4hy44"]
+[ext_resource type="Texture2D" uid="uid://c554cykg4eukt" path="res://assets/start_button2.png" id="3_ytr4m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4hy44"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ytr4m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l48gv"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ecwwl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kk3ma"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nrnbx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_iqepy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h1wq0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dwrpx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g7jxm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jspdm"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l48gv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_4hy44")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ytr4m")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Menu" type="CanvasLayer"]
+script = ExtResource("1_4hy44")
+
+[node name="StartMenu" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(68, 72)
+texture = ExtResource("1_mae5d")
+
+[node name="StartButton" type="Button" parent="."]
+texture_filter = 1
+custom_minimum_size = Vector2(36, 12)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -18.0
+offset_top = -61.0
+offset_right = 18.0
+offset_bottom = -49.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4hy44")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_ytr4m")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_l48gv")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_ecwwl")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_kk3ma")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_nrnbx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_iqepy")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_h1wq0")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_dwrpx")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_g7jxm")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_jspdm")
+flat = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="StartButton"]
+position = Vector2(18, 6)
+sprite_frames = SubResource("SpriteFrames_l48gv")
+
+[connection signal="pressed" from="StartButton" to="." method="OnStartButtonPressed"]

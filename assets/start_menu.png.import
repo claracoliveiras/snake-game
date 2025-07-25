@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4tkmn7ghikdm"
-path="res://.godot/imported/snake-game-bg.png-74e35a9ac9c6c82c0546be6e5c3f58c0.ctex"
+uid="uid://drhbmbbafkxnd"
+path="res://.godot/imported/start_menu.png-94e3ae7e643a077cf582525bfbc014f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/snake-game-bg.png"
-dest_files=["res://.godot/imported/snake-game-bg.png-74e35a9ac9c6c82c0546be6e5c3f58c0.ctex"]
+source_file="res://assets/start_menu.png"
+dest_files=["res://.godot/imported/start_menu.png-94e3ae7e643a077cf582525bfbc014f4.ctex"]
 
 [params]
 

@@ -13,7 +13,7 @@ public partial class Main : Node2D
 	// right = 127
 	// top = 16
 	// bottom = 135
-
+	public bool isGameStarted = false;
 	public int _score = 0;
 	public bool CoinExists = false;
 	public List<Vector2> CellCenters = [];
@@ -25,6 +25,11 @@ public partial class Main : Node2D
 	public int _bodyInstanceAmount = 0;
 	public List<SnakeBody> SnakebodyList = new List<SnakeBody>();
 	public List<Vector2> SnakePositions = new List<Vector2>();
+
+	private void NewGame()
+	{
+		isGameStarted = true;
+	}
 
 	public override void _Ready()
 	{
@@ -63,7 +68,7 @@ public partial class Main : Node2D
 		GameOver();
 
 		var scoreNode = GetNode<Label>("Label");
-		scoreNode.Text = $"Score: {_score}";
+		scoreNode.Text = $"{_score}";
 
 		if (!CoinExists)
 		{
@@ -74,12 +79,13 @@ public partial class Main : Node2D
 
 	private void GameOver()
 	{
-		if (SnakeHead.Position.X <= 7 || SnakeHead.Position.X >= 132 || SnakeHead.Position.Y <= 12 || SnakeHead.Position.Y >= 140)
+		if (SnakeHead.Position.X <= 7 || SnakeHead.Position.X >= 132 || SnakeHead.Position.Y <= 12 || SnakeHead.Position.Y >= 140 || SnakePositions.GetRange(1, SnakePositions.Count - 1).Contains(SnakeHead.Position))
 		{
 			DirectionIndex = 0;
 			_score = 0;
 			SnakeHead.Position = InitialPosition;
 			_bodyInstanceAmount = 0;
+			HandleDeleteBody();
 		}
 	}
 
@@ -93,28 +99,32 @@ public partial class Main : Node2D
 
 	private void OnTimerTimeout()
 	{
-		var animatedSprite2D = SnakeHead.AnimatedSprite2D;
-		var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
-
-		switch (DirectionIndex)
+		if (isGameStarted)
 		{
-			case 0:
-				SnakeHead.Position = new Vector2(SnakeHead.Position.X + spriteSize.X, SnakeHead.Position.Y);
-				break;
-			case 1:
-				SnakeHead.Position = new Vector2(SnakeHead.Position.X - spriteSize.X, SnakeHead.Position.Y);
-				break;
-			case 2:
-				SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y - spriteSize.X);
-				break;
-			case 3:
-				SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y + spriteSize.X);
-				break;
+			var animatedSprite2D = SnakeHead.AnimatedSprite2D;
+			var spriteSize = animatedSprite2D.SpriteFrames.GetFrameTexture("right", 0).GetSize();
 
-		}
+			switch (DirectionIndex)
+			{
+				case 0:
+					SnakeHead.Position = new Vector2(SnakeHead.Position.X + spriteSize.X, SnakeHead.Position.Y);
+					break;
+				case 1:
+					SnakeHead.Position = new Vector2(SnakeHead.Position.X - spriteSize.X, SnakeHead.Position.Y);
+					break;
+				case 2:
+					SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y - spriteSize.X);
+					break;
+				case 3:
+					SnakeHead.Position = new Vector2(SnakeHead.Position.X, SnakeHead.Position.Y + spriteSize.X);
+					break;
+
+			}
 
 		UpdateSnakePositionList();
 		HandleBodySpawn();
+		}
+		
 	}
 
 	public void UpdateSnakePositionList()
@@ -138,6 +148,7 @@ public partial class Main : Node2D
 			SnakebodyList.Insert(0, _instance);
 			AddChild(_instance);
 			_bodyInstanceAmount -= 1;
+			counter += 1;
 		}
 
 		HandleBodyMovement();
@@ -155,21 +166,9 @@ public partial class Main : Node2D
 
 	private void HandleDeleteBody()
 	{
-		// foreach (string name in bodyNodeNames)
-		// {
-		// 	var nodeToRemove = GetNode($"{name}");
-		// 	nodeToRemove.QueueFree();
-		// }
-
-		// var counter = 0;
-		// foreach (Vector2 position in SnakePositions)
-		// {
-
-		// FOR DELETING
-		// for loop that does get_node whose name includes #body
-		// add it into a list
-		// loop through the list deleting everything
-		// body1, body2, body3
-		// [thing].QueueFree();
+		foreach (SnakeBody snakeBody in SnakebodyList)
+		{
+			snakeBody.QueueFree();
+		}
 	}
 }
