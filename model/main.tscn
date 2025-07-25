@@ -12,7 +12,7 @@ texture_filter = 1
 position = Vector2(68, 72)
 texture = ExtResource("2_qlidy")
 
-[node name="Label" type="Label" parent="."]
+[node name="ScoreDisplay" type="Label" parent="."]
 texture_filter = 1
 offset_left = 102.0
 offset_top = 6.0
@@ -20,11 +20,11 @@ offset_right = 154.0
 offset_bottom = 29.0
 scale = Vector2(0.25, 0.25)
 
-[node name="Timer" type="Timer" parent="."]
+[node name="MovementTimer" type="Timer" parent="."]
 wait_time = 0.5
 autostart = true
 
 [node name="Menu" parent="." instance=ExtResource("3_r1oox")]
 
-[connection signal="timeout" from="Timer" to="." method="OnTimerTimeout"]
+[connection signal="timeout" from="MovementTimer" to="." method="OnTimerTimeout"]
 [connection signal="StartGame" from="Menu" to="." method="NewGame"]

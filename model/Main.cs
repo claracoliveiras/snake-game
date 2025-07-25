@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Threading.Tasks;
 
 public partial class Main : Node2D
 {
@@ -63,11 +64,11 @@ public partial class Main : Node2D
 		}
 	}
 
-	public override void _Process(double delta)
+	public override async void _Process(double delta)
 	{
-		GameOver();
+		await GameOver();
 
-		var scoreNode = GetNode<Label>("Label");
+		var scoreNode = GetNode<Label>("ScoreDisplay");
 		scoreNode.Text = $"{_score}";
 
 		if (!CoinExists)
@@ -77,7 +78,7 @@ public partial class Main : Node2D
 
 	}
 
-	private void GameOver()
+	private async Task GameOver()
 	{
 		if (SnakeHead.Position.X <= 7 || SnakeHead.Position.X >= 132 || SnakeHead.Position.Y <= 12 || SnakeHead.Position.Y >= 140 || SnakePositions.GetRange(1, SnakePositions.Count - 1).Contains(SnakeHead.Position))
 		{
@@ -86,6 +87,9 @@ public partial class Main : Node2D
 			SnakeHead.Position = InitialPosition;
 			_bodyInstanceAmount = 0;
 			HandleDeleteBody();
+			isGameStarted = false;
+			await ToSignal(GetTree().CreateTimer(3.0), SceneTreeTimer.SignalName.Timeout);
+			isGameStarted = true;
 		}
 	}
 
