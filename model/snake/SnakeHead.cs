@@ -26,22 +26,22 @@ public partial class SnakeHead : Node2D
 	public override void _Input(InputEvent @event)
 	{
 
-		if (@event.IsActionPressed("move_right"))
+		if (@event.IsActionPressed("move_right") && MainNode.DirectionIndex != 1)
 		{
 			MainNode.DirectionIndex = 0;
 
 		}
-		else if (@event.IsActionPressed("move_left"))
+		else if (@event.IsActionPressed("move_left") && MainNode.DirectionIndex != 0)
 		{
 			MainNode.DirectionIndex = 1;
 
 		}
-		else if (@event.IsActionPressed("move_up"))
+		else if (@event.IsActionPressed("move_up") && MainNode.DirectionIndex != 3)
 		{
 			MainNode.DirectionIndex = 2;
 
 		}
-		else if (@event.IsActionPressed("move_down"))
+		else if (@event.IsActionPressed("move_down") && MainNode.DirectionIndex != 2)
 		{
 			MainNode.DirectionIndex = 3;
 
