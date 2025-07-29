@@ -24,7 +24,7 @@ public partial class Main : Node2D
 	public int minYPosition = 16;
 	public int maxYPosition = 135;
 
-	private void NewGame()
+	public void NewGame()
 	{
 		IsGameStarted = true;
 	}
